@@ -1,0 +1,11 @@
+# Ignore all bash scripts
+*.sh
+
+# Ignore preview output directory
+preview_output/
+
+# Ignore other common build artifacts
+*.swp
+*.swo
+*~
+.DS_Store
