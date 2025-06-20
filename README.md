@@ -3,21 +3,45 @@
 ## Install
 Configurate plymouth
 ```nix
-{ pkgs, ... }: let
-    nixos-src = pkgs.fetchFromGitHub {
+{ config, lib, pkgs, ... }:
+
+let
+  nixos-plymouth-theme = pkgs.stdenv.mkDerivation rec {
+    pname = "nixos-boot-plymouth-theme";
+    version = "1.0";
+    
+    src = pkgs.fetchFromGitHub {
       owner = "daVinci13";
-      repo = "nixos_boot_plymouth_theme";
-      rev = "7f80e9630ba95ce2d254547a1d7becfaceae0ee9";
-      sha256 = "0g3dcbs3imalfhnkhnls0vw1lpjxbi6pzp6fg4vqrwlb5ml0fdpi";
+      repo = "nixos_boot_plymouth";
+      rev = "master";  # or specific commit hash
+      sha256 = lib.fakeSha256;
     };
-    nixos_load = pkgs.callPackage nixos-src {};
-in {
+    
+    dontBuild = true;
+    
+    installPhase = ''
+      mkdir -p $out/share/plymouth/themes/nixos
+      cp -r * $out/share/plymouth/themes/nixos/
+    '';
+  };
+in
+{
   boot = {
     plymouth = {
       enable = true;
       theme = "nixos";
-      themePackages = [ nixos_load ];
+      themePackages = [ nixos-plymouth-theme ];
     };
+    
+    # Required for Plymouth to work properly
+    initrd.systemd.enable = true;
+    
+    # Kernel parameters for clean boot
+    kernelParams = [
+      "quiet"
+      "splash"
+      "plymouth.ignore-serial-consoles"
+    ];
   };
 }
 ```
