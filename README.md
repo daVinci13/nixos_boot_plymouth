@@ -4,19 +4,19 @@
 Configurate plymouth
 ```nix
 { pkgs, ... }: let
-    mac-style-src = pkgs.fetchFromGitHub {
+    nixos-src = pkgs.fetchFromGitHub {
       owner = "daVinci13";
       repo = "nixos_boot_plymouth_theme";
-      rev = "bc585b7f42af415fe40bece8192d9828039e6e20";
-      sha256 = "sha256-yOvZ4F5ERPfnSlI/Scf9UwzvoRwGMqZlrHkBIB3Dm/w=";
+      rev = "7f80e9630ba95ce2d254547a1d7becfaceae0ee9";
+      sha256 = "0g3dcbs3imalfhnkhnls0vw1lpjxbi6pzp6fg4vqrwlb5ml0fdpi";
     };
-    mac-style-load = pkgs.callPackage mac-style-src {};
+    nixos_load = pkgs.callPackage nixos-src {};
 in {
   boot = {
     plymouth = {
       enable = true;
-      theme = "mac-style";
-      themePackages = [ mac-style-load ];
+      theme = "nixos";
+      themePackages = [ nixos_load ];
     };
   };
 }
